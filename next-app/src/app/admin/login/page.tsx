@@ -4,6 +4,8 @@ import Image from 'next/image';
 import React from 'react'; 
 import { useState } from 'react';
 import { Architects_Daughter } from 'next/font/google';
+import { apiClient } from '@/lib';
+import { ADMIN_API_ROUTES } from '@/utils';
 
 const ArchitectsDaughter = Architects_Daughter({
     weight:"400",
@@ -15,9 +17,16 @@ const Login = () => {
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
 
-    const handleLogin = ()=>{
-
-    }
+    const handleLogin = async ()=>{
+        const response = await apiClient.post(ADMIN_API_ROUTES.LOGIN,{
+            email,
+            password,
+        });
+        if(response.data.userInfo)
+        {
+            
+        }
+    };
 
   return (
     <div className="h-[100vh] w-full flex items-center justify-center bg-center bg-no-repeat bg-cover" 
