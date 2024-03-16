@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 
-
 export async function POST(request : Request){
     try
     {
@@ -10,6 +9,7 @@ export async function POST(request : Request){
         {
             return NextResponse.json({message : "Email and password are required"},{status:400});
         }
+        
     }
     catch(error)
     {

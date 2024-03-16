@@ -4,6 +4,8 @@ import Image from 'next/image';
 import React from 'react'; 
 import { useState } from 'react';
 import { Architects_Daughter } from 'next/font/google';
+import { toast } from 'react-toastify';
+
 
 
 
@@ -17,7 +19,36 @@ const Login = () => {
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
 
+    const notifyA = (err:string)=>toast.error(err);
+    const notifyB = (suc:string)=>toast.error(suc);
+
+    const regexEmail =/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+
     const handleLogin = async ()=>{
+        if(!regexEmail.test(email))
+        {
+            notifyA("Invalid Email Format");
+            return; 
+        }
+
+        try
+        {
+            fetch("http://localhost:3000/api/admin/login",{
+                method:"post",
+                headers:{
+                    "Content-Type":"application/json",
+                },
+                body:JSON.stringify({
+                    email:email,
+                    password:password,
+                })
+
+            }).then
+        }
+        catch
+        {
+
+        }
        
     };
 
