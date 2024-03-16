@@ -30,11 +30,10 @@ const Login = () => {
             notifyA("Invalid Email Format");
             return; 
         }
-
         try
         {
-            fetch("http://localhost:3000/api/admin/login",{
-                method:"post",
+            const response =  await fetch("http://localhost:3000/api/admin/login",{
+                method:"POST",
                 headers:{
                     "Content-Type":"application/json",
                 },
@@ -43,11 +42,20 @@ const Login = () => {
                     password:password,
                 })
 
-            }).then
+            })
+            const data = await response.json();
+            if(!response.ok)
+            {
+                notifyA(data.message);
+            }
+            else
+            {
+                notifyB(data.message);
+            }
         }
         catch
         {
-
+            notifyA("Login Failed");
         }
        
     };

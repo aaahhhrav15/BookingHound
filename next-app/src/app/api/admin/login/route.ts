@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(request : Request){
     try
     {
+        return NextResponse.json({result:true});
         const {email,password}=await request.json();
         if(!email || !password)
         {
