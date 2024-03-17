@@ -7,8 +7,6 @@ import { Architects_Daughter } from 'next/font/google';
 import { toast } from 'react-toastify';
 
 
-
-
 const ArchitectsDaughter = Architects_Daughter({
     weight:"400",
     style:"normal",

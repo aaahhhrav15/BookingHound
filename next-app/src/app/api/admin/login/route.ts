@@ -1,11 +1,9 @@
 import mongoURL from "@/lib/db";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
-
+import { Admin } from "@/lib/models/adminModel";
 
 const bcrypt = require("bcrypt");
-const Admin = mongoose.model("admins");
-
 
 export async function POST(request : Request){
     try
@@ -21,7 +19,7 @@ export async function POST(request : Request){
         {
             return NextResponse.json({ message: "Admin not found" }, { status: 404 });
         }
-        const passwordMatch = await bcrypt.compare(password,admin.password);
+        const passwordMatch = password === admin.password;
         if(!passwordMatch)
         {
             return NextResponse.json({ message: "Password Incorrect" }, { status: 404 });
