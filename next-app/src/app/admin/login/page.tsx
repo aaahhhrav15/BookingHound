@@ -5,6 +5,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Architects_Daughter } from 'next/font/google';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 
 const ArchitectsDaughter = Architects_Daughter({
@@ -19,6 +20,8 @@ const Login = () => {
 
     const notifyA = (err:string)=>toast.error(err);
     const notifyB = (suc:string)=>toast.error(suc);
+
+    const router = useRouter();
 
     const regexEmail =/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
@@ -49,6 +52,7 @@ const Login = () => {
             else
             {
                 notifyB(data.message);
+                router.push("/admin");
             }
         }
         catch
@@ -80,7 +84,7 @@ const Login = () => {
                 
             </CardHeader>
             <CardBody className="flex flex-col items-center justify-center w-full">
-                <div className="flex flex-col gap-3 w-11/12">
+                <div className="flex flex-col gap-2 w-11/12">
                     <Input
                         placeholder="Email"
                         type="email"

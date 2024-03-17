@@ -22,7 +22,9 @@
     "prisma": "^5.11.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-toastify": "^10.0.5"
+    "react-pro-sidebar": "^1.1.0",
+    "react-toastify": "^10.0.5",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/node": "^20",
