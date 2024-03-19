@@ -86,22 +86,23 @@ const Login = () => {
             <CardBody className="flex flex-col items-center justify-center w-full">
                 <div className="flex flex-col gap-2 w-11/12">
                     <Input
-                        placeholder="Email"
+                        label="Email"
                         type="email"
                         value={email}
                         onChange={(e)=>{
                             setEmail(e.target.value)
                         }} 
-
+                        className="h-14"
                         color="danger"
                     />
                     <Input
-                        placeholder="Password"
+                        label="Password"
                         type="password"
                         value={password}
                         onChange={(e)=>{
                             setPassword(e.target.value)
                         }} 
+                        className="h-14"
                         color="danger"
                     />
                 </div>

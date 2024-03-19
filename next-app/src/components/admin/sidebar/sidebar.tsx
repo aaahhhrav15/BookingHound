@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Architects_Daughter } from "next/font/google";
 import {
   Sidebar as ReactProSidebar,
@@ -7,23 +7,27 @@ import {
   MenuItem,
   sidebarClasses,
 } from "react-pro-sidebar";
-
 import { BiSolidCategory } from "react-icons/bi";
 import { FaBookOpen, FaHome, FaHotel } from "react-icons/fa";
 import { LuLogOut } from "react-icons/lu";
 import { MdOutlineDataUsage } from "react-icons/md";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const ArchitectsDaughter = Architects_Daughter({
-  weight: "400",
+  weight: "400", 
   style: "normal",
   subsets: ["latin"],
 });
 
 export const Sidebar = () => {
-  const [selectedItem, setSelectedItem] = useState("/admin/dashboard");
+  const [selectedItem, setSelectedItem] = useState("");
   const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setSelectedItem(pathname);
+  }, [pathname]);
 
   const handleItemClick = (link: string) => {
     setSelectedItem(link);
