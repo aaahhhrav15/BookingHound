@@ -3,13 +3,14 @@ import { NextResponse } from "next/server";
 import { Jobs } from "@/lib/models/jobsModel";
 import mongoose from "mongoose";
 
-
 export async function POST(request : Request)
 {
+
     try
     {
         const {url,jobType} = await request.json();
-
+        const job = new Jobs({url:url,jobType:jobType});
+        const response = await job.save();
     }
     catch(error)
     {
