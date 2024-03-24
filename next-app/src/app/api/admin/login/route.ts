@@ -1,4 +1,4 @@
-import mongoURL from "@/lib/db";
+import { mongoURL } from "@/lib/db";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import { Admin } from "@/lib/models/adminModel";

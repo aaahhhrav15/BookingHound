@@ -1,9 +1,9 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import {
   Card,
-  CardBody, 
-  CardFooter, 
+  CardBody,
+  CardFooter,
   Input,
   Listbox,
   ListboxItem,
@@ -12,6 +12,9 @@ import {
   Tabs,
 } from "@nextui-org/react";
 import axios from "axios";
+import apiClient from "@/lib/api-client";
+import { ADMIN_API_ROUTES } from "@/utils/api-routes";
+import ScrapingQueue from "@/components/admin/scraping-queue/scraping-queue";
 
 const ScrapeData = () => {
   const [cities, setCities] = useState([]);
@@ -42,9 +45,34 @@ const ScrapeData = () => {
     }
   };
 
-  const startScraping = () => {
-    console.log("nothing");
+  const startScraping = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/admin/create-jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url: `https://packages.yatra.com/holidays/intl/search.htm?destination=${selectedCity}`,
+          jobType: { type: "location" },
+        }),
+      });
+  
+      if (!response.ok) 
+      {
+        throw new Error("Failed to start scraping");
+      }
+  
+      const data = await response.json();
+      console.log("Scraping started successfully:", data);
+    } 
+    catch (error) 
+    {
+      console.error("Error starting scraping:", error);
+    }
   };
+  
+  
 
   return (
     <section>
@@ -58,8 +86,12 @@ const ScrapeData = () => {
                 value={searchString}
                 onChange={(e) => setSearchString(e.target.value)}
               />
+
               <div className="w-full min-h-[200px] max-w-[260px] border-small px-1 py-2 rounded-small border-default-200 dark:border-default-100 mt-5">
-                <Listbox onAction={(key) => setSelectedCity(key as string)}>
+                <Listbox
+                  aria-label="Select a city"
+                  onAction={(key) => setSelectedCity(key as string)}
+                >
                   {cities.map((city) => (
                     <ListboxItem
                       key={city}
@@ -92,6 +124,7 @@ const ScrapeData = () => {
           </CardFooter>
         </div>
       </Card>
+      <ScrapingQueue/>
     </section>
   );
 };
