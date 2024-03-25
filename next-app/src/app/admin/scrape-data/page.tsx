@@ -75,9 +75,9 @@ const ScrapeData = () => {
   
 
   return (
-    <section>
-      <Card className="m-10 grid grid-cols-3 gap-5">
-        <CardBody className="col-span-2">
+    <section className="m-10 grid grid-cols-3 gap-5">
+      <Card className="col-span-2">
+        <CardBody>
           <Tabs>
             <Tab key="location" title="Location">
               <Input
