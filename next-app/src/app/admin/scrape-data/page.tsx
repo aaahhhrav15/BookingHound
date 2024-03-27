@@ -15,6 +15,7 @@ import axios from "axios";
 import apiClient from "@/lib/api-client";
 import { ADMIN_API_ROUTES } from "@/utils/api-routes";
 import ScrapingQueue from "@/components/admin/scraping-queue/scraping-queue";
+import { CurrentlyScrapingTable } from "./components/currently-scraping-table";
 
 const ScrapeData = () => {
   const [cities, setCities] = useState([]);
@@ -22,6 +23,7 @@ const ScrapeData = () => {
     undefined
   );
   const [searchString, setSearchString] = useState("");
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     if (searchString.trim() !== "") {
@@ -33,20 +35,24 @@ const ScrapeData = () => {
 
   const searchCities = async (searchString: string) => {
     console.log("Searching for:", searchString);
-    try {
+    try 
+    {
       const response = await axios.get(
         `https://secure.geonames.org/searchJSON?q=${searchString}&maxRows=5&username=kishan&style=SHORT`
       );
       const parsed = response.data?.geonames;
       setCities(parsed?.map((city: { name: string }) => city.name) ?? []);
       console.log({ response });
-    } catch (error) {
+    } 
+    catch (error) 
+    {
       console.error("Error fetching data:", error);
     }
   };
 
   const startScraping = async () => {
-    try {
+    try 
+    {
       const response = await fetch("http://localhost:3000/api/admin/create-jobs", {
         method: "POST",
         headers: {
@@ -57,22 +63,46 @@ const ScrapeData = () => {
           jobType: { type: "location" },
         }),
       });
-  
+
       if (!response.ok) 
       {
         throw new Error("Failed to start scraping");
       }
-  
+
       const data = await response.json();
       console.log("Scraping started successfully:", data);
-    } 
+    }
     catch (error) 
     {
       console.error("Error starting scraping:", error);
     }
   };
-  
-  
+
+  useEffect(() => {
+    const getData = async () => {
+      try 
+      {
+        const response = await fetch("http://localhost:3000/api/admin/job-details");
+        if (!response.ok) 
+        {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setJobs(data.jobs);
+      }
+      catch (error) 
+      {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    const interval = setInterval(() => {
+      getData();
+    }, 3000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <section className="m-10 grid grid-cols-3 gap-5">
@@ -124,7 +154,10 @@ const ScrapeData = () => {
           </CardFooter>
         </div>
       </Card>
-      <ScrapingQueue/>
+      <ScrapingQueue />
+      <div className="cols-span-3">
+        <CurrentlyScrapingTable jobs={jobs} />
+      </div>
     </section>
   );
 };

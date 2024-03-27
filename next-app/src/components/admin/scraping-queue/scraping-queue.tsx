@@ -25,11 +25,8 @@ const ScrapingQueue = () => {
                 {
                     throw new Error("Failed to fetch data");
                 }
-                console.log("Fetching data");
                 const data = await response.json();
-                console.log("hello!");
                 setOnGoingJobs(data.onGoingJobs);
-                console.log("aarave!");
             }
             catch (error) 
             {
