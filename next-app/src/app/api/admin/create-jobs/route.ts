@@ -8,7 +8,9 @@ export async function POST(request : Request)
 {
     try 
     {
+
         await mongoose.connect(mongoURL1);
+        // return NextResponse.json({message:"hello"});
         const { url, jobType } = await request.json();
         const job = new Jobs({url: url,jobType: jobType });
         console.log("Url: " + url);

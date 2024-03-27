@@ -42,6 +42,7 @@ const ScrapingQueue = () => {
         };
     }, []);
 
+
     const onGoingJobColor = () => {
         if (onGoingJobs <= 5) 
             return "bg-green-500";

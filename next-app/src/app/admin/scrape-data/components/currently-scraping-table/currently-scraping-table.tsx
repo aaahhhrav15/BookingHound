@@ -50,7 +50,7 @@ interface JobType {
     status: "active" | "failed" | "complete";
 }
 
-const CurrentlyScrapingTable=({ jobs }: { jobs: JobType[] }) =>{
+const CurrentlyScrapingTable = ({ jobs }: { jobs: JobType[] }) => {
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
         new Set([])
@@ -129,12 +129,13 @@ const CurrentlyScrapingTable=({ jobs }: { jobs: JobType[] }) =>{
                         </Link>
                     );
                 case "jobType":
-                    return cellValue.type;
+                    return <span key={user.id}>{cellValue.type}</span>;;
                 case "createdAt":
-                    return formatDateAndTime(cellValue);
+                    return <span key={user.id}>{formatDateAndTime(cellValue)}</span>;
                 case "status":
                     return (
                         <Chip
+                            key={user.id}
                             className="capitalize"
                             color={statusColorMap[user.status]}
                             size="sm"
@@ -145,7 +146,7 @@ const CurrentlyScrapingTable=({ jobs }: { jobs: JobType[] }) =>{
                     );
 
                 default:
-                    return cellValue;
+                    return <span key={user.id}>{cellValue}</span>;
             }
         },
         []
@@ -297,7 +298,7 @@ const CurrentlyScrapingTable=({ jobs }: { jobs: JobType[] }) =>{
         onPreviousPage,
         onNextPage,
     ]);
-
+    console.log("Items array:", items);
     return (
         <Table
             aria-label="Example table with custom cells, pagination and sorting"
@@ -325,16 +326,29 @@ const CurrentlyScrapingTable=({ jobs }: { jobs: JobType[] }) =>{
                     </TableColumn>
                 )}
             </TableHeader>
-            <TableBody emptyContent={"No jobs found"} items={items}>
-                {(item) => (
+            <TableBody>
+                {items.map((item) => (
                     <TableRow key={item.id}>
-                        {(columnKey) => (
-                            <TableCell>{renderCell(item, columnKey)}</TableCell>
-                        )}
+                        <TableCell className="text-black">{item.id}</TableCell>
+                        <TableCell className="text-black">{item.url}</TableCell>
+                        <TableCell className="text-black">{item.createdAt}</TableCell>
+                        <TableCell className="text-black">{item.jobType.type}</TableCell>
+                        <TableCell>
+                            <Chip
+                                key={item.id}
+                                className="capitalize"
+                                color={statusColorMap[item.status]}
+                                size="sm"
+                                variant="flat"
+                            >
+                                {item.status}
+                            </Chip>
+                        </TableCell>
                     </TableRow>
-                )}
+                ))}
             </TableBody>
         </Table>
     );
+    console.log("hi");
 }
 export default CurrentlyScrapingTable;
