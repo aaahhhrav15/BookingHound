@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import {
     Table,
@@ -89,6 +89,26 @@ const CurrentlyScrapingTable = ({ jobs }: { jobs: JobType[] }) => {
         return filteredUsers;
     }, [jobs, hasSearchFilter, statusFilter, filterValue]);
 
+    const formatDateAndTime=(inputDate: string)=>{
+        const date = new Date(inputDate);
+
+        const options = {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+          timeZoneName: "short",
+        } as Intl.DateTimeFormatOptions;
+
+        const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
+          date
+        );
+
+        return formattedDate;
+    }
+
     const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
     const items = React.useMemo(() => {
@@ -97,60 +117,6 @@ const CurrentlyScrapingTable = ({ jobs }: { jobs: JobType[] }) => {
 
         return filteredItems.slice(start, end);
     }, [page, filteredItems, rowsPerPage]);
-
-    const renderCell = React.useCallback(
-        (user: JobType, columnKey: React.Key) => {
-            const cellValue = user[columnKey as keyof JobType];
-
-            function formatDateAndTime(inputDate: string) {
-                const date = new Date(inputDate);
-
-                const options = {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                    second: "numeric",
-                    timeZoneName: "short",
-                } as Intl.DateTimeFormatOptions;
-
-                const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-                    date
-                );
-
-                return formattedDate;
-            }
-            switch (columnKey) {
-                case "url":
-                    return (
-                        <Link href={cellValue} target="_blank">
-                            {cellValue}
-                        </Link>
-                    );
-                case "jobType":
-                    return <span key={user.id}>{cellValue.type}</span>;;
-                case "createdAt":
-                    return <span key={user.id}>{formatDateAndTime(cellValue)}</span>;
-                case "status":
-                    return (
-                        <Chip
-                            key={user.id}
-                            className="capitalize"
-                            color={statusColorMap[user.status]}
-                            size="sm"
-                            variant="flat"
-                        >
-                            {cellValue}
-                        </Chip>
-                    );
-
-                default:
-                    return <span key={user.id}>{cellValue}</span>;
-            }
-        },
-        []
-    );
 
     const onNextPage = React.useCallback(() => {
         if (page < pages) {
@@ -330,8 +296,10 @@ const CurrentlyScrapingTable = ({ jobs }: { jobs: JobType[] }) => {
                 {items.map((item) => (
                     <TableRow key={item.id}>
                         <TableCell className="text-black">{item.id}</TableCell>
-                        <TableCell className="text-black">{item.url}</TableCell>
-                        <TableCell className="text-black">{item.createdAt}</TableCell>
+                        <TableCell className="text-black hover:text-primary-500 cursor-pointer">
+                            <a href={item.url} target="_blank" rel="noopener noreferrer">{item.url}</a>
+                        </TableCell>
+                        <TableCell className="text-black">{formatDateAndTime(item.createdAt)}</TableCell>
                         <TableCell className="text-black">{item.jobType.type}</TableCell>
                         <TableCell>
                             <Chip
@@ -349,6 +317,5 @@ const CurrentlyScrapingTable = ({ jobs }: { jobs: JobType[] }) => {
             </TableBody>
         </Table>
     );
-    console.log("hi");
-}
+};
 export default CurrentlyScrapingTable;
