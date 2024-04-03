@@ -3,7 +3,7 @@ import { connection } from "./redis";
 
 console.log("Creating new job queue...");
 
-export const jobsQueue = new Queue("importQueue", {
+export const jobsQueue = new Queue("jobsQueue", {
   connection,
   defaultJobOptions: {
     attempts: 2,

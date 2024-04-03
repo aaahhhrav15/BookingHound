@@ -12,9 +12,7 @@ export async function POST(request: Request)
         const { url, jobType } = await request.json();
         const job = new Jobs({ url: url, jobType: jobType });
         const response = await job.save();
-        console.log("Job data:", { url, jobType, id: response._id });
         await jobsQueue.add("new location", { url, jobType, id: response._id });
-        console.log("job added to queue");
         if (response) 
         {
             return NextResponse.json({ jobCreated: true }, { status: 200 });
