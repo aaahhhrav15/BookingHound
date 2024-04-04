@@ -1,5 +1,7 @@
 import { Browser } from "puppeteer";
-import { Jobs } from "./lib/models/jobsModel"; // Import the Jobs model
+import { Jobs } from "./lib/models/jobsModel";
+import { startLocationScraping } from "./scraping/location-scraping";
+import { jobsQueue } from "./lib/queue";
 
 export const register = async () => {
   if (process.env.NEXT_RUNTIME === "nodejs") {
@@ -21,8 +23,28 @@ export const register = async () => {
           if (job.data.jobType.type === "location") 
           {
             console.log("Connected! Navigating to " + job.data.url);
-            await page.goto(job.data.url);
+            await page.goto(job.data.url,{timeout: 10000});
             console.log("Navigated! Scraping page content...");
+            const packages = await startLocationScraping(page);
+            await Jobs.findOneAndUpdate(
+              { id:job.data.id },
+              { isComplete: true, status: "failed" }
+            )
+            for(const pkg of packages)
+            {
+              const jobCreated = await Jobs.findOne(
+                {url:`https://packages.yatra.com/holidays/intl/details.htm?packageId=${pkg?.id}`}
+              )
+              if(!jobCreated)
+              {
+                const job = new Jobs({
+                  url: `https://packages.yatra.com/holidays/intl/details.htm?packageId=${pkg?.id}`,
+                  jobType: { type: "package" },
+                });
+                await job.save();
+                jobsQueue.add("package", { ...job, packageDetails: pkg });
+              }
+            }
           }
         } 
         catch (error) 

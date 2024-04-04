@@ -1,8 +1,6 @@
 import { Queue } from "bullmq";
 import { connection } from "./redis";
 
-console.log("Creating new job queue...");
-
 export const jobsQueue = new Queue("jobsQueue", {
   connection,
   defaultJobOptions: {
@@ -13,5 +11,3 @@ export const jobsQueue = new Queue("jobsQueue", {
     },
   },
 });
-
-console.log("Job queue created:", jobsQueue);
