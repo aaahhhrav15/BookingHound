@@ -2,6 +2,8 @@ import { Browser } from "puppeteer";
 import { Jobs } from "./lib/models/jobsModel";
 import { startLocationScraping } from "./scraping/location-scraping";
 import { jobsQueue } from "./lib/queue";
+import { startPackageScraping } from "./scraping/package-scraping";
+import { Trips } from "./lib/models/tripsModel";
 
 export const register = async () => {
   if (process.env.NEXT_RUNTIME === "nodejs") {
@@ -12,7 +14,7 @@ export const register = async () => {
 
     new Worker(
       "jobsQueue",
-      async (job) => {
+      async (job:any) => {
         let browser: undefined | Browser = undefined;
         try 
         {
@@ -20,30 +22,59 @@ export const register = async () => {
             browserWSEndpoint: SBR_WS_ENDPOINT,
           });
           const page = await browser.newPage();
+
+          
           if (job.data.jobType.type === "location") 
           {
-            console.log("Connected! Navigating to " + job.data.url);
-            await page.goto(job.data.url,{timeout: 10000});
-            console.log("Navigated! Scraping page content...");
+            console.log("hello!");
             const packages = await startLocationScraping(page);
             await Jobs.findOneAndUpdate(
-              { id:job.data.id },
+              { id: job.data.id },
               { isComplete: true, status: "failed" }
             )
+            console.log("hi");
             for(const pkg of packages)
             {
               const jobCreated = await Jobs.findOne(
                 {url:`https://packages.yatra.com/holidays/intl/details.htm?packageId=${pkg?.id}`}
-              )
+              );
               if(!jobCreated)
               {
+                console.log("how are you");
                 const job = new Jobs({
-                  url: `https://packages.yatra.com/holidays/intl/details.htm?packageId=${pkg?.id}`,
+                  url:`https://packages.yatra.com/holidays/intl/details.htm?packageId=${pkg?.id}`,
                   jobType: { type: "package" },
                 });
                 await job.save();
                 jobsQueue.add("package", { ...job, packageDetails: pkg });
               }
+              console.log("aarav i am ");
+            }
+          }
+
+
+          else if(job.data.jobType.type === "package")
+          {
+            console.log("in package");
+            const alreadyScrapped = await Trips.findOne(
+              { id: job.data.packageDetails.id }
+            );
+
+            if (!alreadyScrapped) 
+            {
+              console.log("Connected! Navigating to " + job.data.url);
+              await page.goto(job.data.url, { timeout: 10000 });
+              console.log("Navigated! Scraping page content...");
+              const pkg = await startPackageScraping(
+                page,
+                job.data.packageDetails
+              );
+              await Trips.create(pkg);
+              await Jobs.updateOne(
+                { id: job.data.id }, 
+                { isComplete: true }, 
+                { status: "complete" }, 
+              );
             }
           }
         } 

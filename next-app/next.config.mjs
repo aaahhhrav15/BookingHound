@@ -1,8 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        instrumentationHook: true,
+      instrumentationHook: false,
     },
-};
-
-export default nextConfig;
+    webpack: (config) => {
+      config.resolve.fallback = {
+        fs: false,
+      };
+      return config;
+    },
+  };
+  
+  export default nextConfig;
