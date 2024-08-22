@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://aptible:MFa4T9UcRnndRbRrK3Tf_Psly_ItyrpD@db-shared-us-east-1-wat-122848.aptible.in:26845/db"
+}
+
+
+model User {
+  id Int @default(autoincrement()) @id
+  email String @unique
+  password String
+  firstName String
+  lastName String
+  createdAt DateTime @default(now())
+  bookings Bookings[]
+}
+
+model Admin {
+  id Int @default(autoincrement()) @id
+  email String @unique
+  password String
+  createdAt DateTime @default(now())
+}
+
+model Jobs {
+  id Int @default(autoincrement()) @id
+  url String
+  isComplete Boolean @default(false)
+  status String @default("active")
+  jobType Json
+  createdAt DateTime @default(now())
+}
+
+
+model Trips {
+  id String @id @unique
+  name String
+  nights Int
+  days Int
+  destinationItinerary Json
+  images Json
+  inclusions Json
+  themes Json
+  price Int
+  destinationDetails Json
+  detailedIntineary Json
+  description String
+  packageIteniary Json
+  scrapedOn DateTime @default(now())
+}
+
+model Flights {
+  id Int @default(autoincrement()) @id
+  name String
+  logo String
+  from String
+  to String
+  departureTime String
+  arrivalTime String
+  duration String
+  scrappedOn DateTime @default(now())
+  price Int
+  jobId Int
+}
+
+model Hotels {
+  id Int @default(autoincrement()) @id
+  name String
+  image String
+  price Int
+  jobId Int
+  location String
+  scrappedOn DateTime @default(now())
+}
+
+model Bookings {
+  id Int @default(autoincrement()) @id
+  createdAt DateTime @default(now())
+  date DateTime
+  bookingType String 
+  bookingTypeId String 
+  userId Int        
+  totalAmount Int  
+  paymentIntent String @unique
+  isCompleted Boolean @default(false)
+  user User @relation(fields: [userId], references: [id])
+}
