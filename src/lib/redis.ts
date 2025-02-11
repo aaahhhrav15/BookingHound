@@ -1,9 +1,7 @@
 import Redis from "ioredis";
 
-// You can get the REDIS_URL from your environment variables
-const REDIS_URL =
-  process.env.REDIS_URL ||
-  "redis://localhost:rediss://aptible:dUd2V4fZjmBXqSPAfR8NTKb0uDCaIo7j@db-shared-us-east-1-wat-122849.aptible.in:29679";
+// Use the local Redis instance for development, falling back to the local Redis URL if `REDIS_URL` isn't provided
+const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
 const connection = new Redis(REDIS_URL);
 
